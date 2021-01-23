@@ -1,26 +1,81 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="main-component">
+    <transition name="fade">
+      <loading-component v-if="loading" />
+    </transition>
+    <transition name="fade">
+      <div v-if="!loading && !auth" class="full-page">
+        <!-- <router-view /> -->
+        <h2>No auth</h2>
+      </div>
+    </transition>
+    <transition name="fade">
+      <div v-if="!loading && auth" class="full-page">
+        <!-- <router-view /> -->
+        <h2>Auth</h2>
+      </div>
+    </transition>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { mapActions, mapGetters } from "vuex";
+import Loading from '@/components/animations/Loading.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    'loading-component': Loading,
+  },
+  data() {
+    return {
+      loading: true,
+      auth: false,
+    }
+  },
+  created() {
+    this.validate(this.token)
+      .then(() => (this.auth = true))
+      .catch(() => (this.auth = false))
+      .finally(() => (this.loading = false));
+  },
+  methods: {
+    ...mapActions("authentication", ["validate"]),
+  },
+  computed: {
+    ...mapGetters({
+      token: ["authentication/token"],
+    }),
+  },
+};
 </script>
 
 <style>
-#app {
+body {
+  margin: 0px;
+}
+.main-component {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #f3f4f6;
+  background-color: #111827;
+  min-height: 100vh;
+}
+.full-page {
+  height: 100%;
+  width: 100%;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

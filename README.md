@@ -1,4 +1,4 @@
-# vue3authentication
+# vue2authentication
 
 ## Project setup
 ```
