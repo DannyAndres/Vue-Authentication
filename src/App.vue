@@ -5,21 +5,19 @@
     </transition>
     <transition name="fade">
       <div v-if="!loading && !auth" class="full-page">
-        <!-- <router-view /> -->
-        <h2>No auth</h2>
+        <router-view />
       </div>
     </transition>
     <transition name="fade">
       <div v-if="!loading && auth" class="full-page">
-        <!-- <router-view /> -->
-        <h2>Auth</h2>
+        <router-view />
       </div>
     </transition>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 import Loading from '@/components/animations/Loading.vue';
 
 export default {
@@ -31,7 +29,7 @@ export default {
     return {
       loading: true,
       auth: false,
-    }
+    };
   },
   created() {
     this.validate(this.token)
@@ -40,11 +38,11 @@ export default {
       .finally(() => (this.loading = false));
   },
   methods: {
-    ...mapActions("authentication", ["validate"]),
+    ...mapActions('authentication', ['validate']),
   },
   computed: {
     ...mapGetters({
-      token: ["authentication/token"],
+      token: ['authentication/token'],
     }),
   },
 };
