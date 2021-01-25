@@ -1,14 +1,14 @@
 <template>
   <div class="main-component">
-    <transition name="fade">
+    <transition name="fade" mode="out-in">
       <loading-component v-if="loading" />
     </transition>
-    <transition name="fade">
+    <transition name="fade" mode="out-in">
       <div v-if="!loading && !auth" class="full-page">
         <router-view />
       </div>
     </transition>
-    <transition name="fade">
+    <transition name="fade" mode="out-in">
       <div v-if="!loading && auth" class="full-page">
         <router-view />
       </div>

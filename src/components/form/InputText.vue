@@ -1,31 +1,10 @@
-<script>
-export default {
-  props: {
-    placeholder: {
-      type: String,
-      required: false
-    }
-  },
-  data() {
-    return {
-      email: ''
-    }
-  },
-  watch: {
-    email() {
-      this.$emit('email', this.email);
-    }
-  }
-}
-</script>
-
 <template>
-  <div class="login-email-container">
+  <div class="login-email-container" :style="error ? 'border: 2px solid #F87171;' : ''">
     <input
       class="login-email-input"
       type="text"
-      name="email"
-      v-model="email"
+      :name="text"
+      v-model="text"
       :placeholder="placeholder"
     />
   </div>
@@ -37,17 +16,24 @@ export default {
     placeholder: {
       type: String,
       required: false
+    },
+    name: {
+      type: String,
+      required: false
+    },
+    error: {
+      type: Boolean,
+      required: false
     }
   },
   data() {
     return {
-      password: '',
-      show_pass: false
+      text: ''
     }
   },
   watch: {
-    password() {
-      this.$emit('password', this.password);
+    text() {
+      this.$emit('text', this.text);
     }
   }
 }

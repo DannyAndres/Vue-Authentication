@@ -1,13 +1,26 @@
 <template>
-  <div>
+  <div class="logo-component-container">
     <img class="logo-image" alt="Vue logo" src="@/assets/logo.png" />
     <h1>Login</h1>
     <div class="login-form-container">
-      <form ref="form" class="login-form" @submit.prevent="login()">
+      <div class="login-form">
+        <transition name="fadeHeight" mode="out-in">
+          <alert-box
+            v-if="error != '' || (Array.isArray(error) && error.length != 0)"
+            class="login-alert-box"
+            type="danger"
+            :title="
+              Array.isArray(error) 
+                ? ('There ' + (error.length == 1 ? 'was' : 'were') + ' ' + error.length + ' error' + (error.length == 1 ? '' : 's') + ' with your submission') 
+                : 'There was an error with your submission'"
+            :errors="error"
+          />
+        </transition>
         <input-text
           class="login-margin"
           placeholder="Email Address"
-          @email="(value) => { form.email = value }"
+          @text="(value) => { form.email = value }"
+          :error="errorEmail"
         />
         <input-password
           placeholder="Password"
@@ -27,11 +40,12 @@
           </div>
         </div>
         <button-component
-          @whenClick="() => $refs.form.submit()"
+          @whenClick="submit()"
+          :loading="!canSubmit"
         >
           Sign in
         </button-component>
-      </form>
+      </div>
     </div>
     <div class="login-link-group">
       <router-link class="login-link" to="/">Inicio</router-link>
@@ -40,9 +54,11 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import InputText from '@/components/form/InputText.vue';
 import InputPassword from '@/components/form/InputPassword.vue';
 import InputCheckbox from '@/components/form/InputCheckbox.vue';
+import AlertBox from '@/components/form/AlertBox.vue';
 import Button from '@/components/form/Button.vue';
 
 export default {
@@ -51,7 +67,8 @@ export default {
     'input-text': InputText,
     'input-password': InputPassword,
     'input-checkbox': InputCheckbox,
-    'button-component': Button
+    'button-component': Button,
+    'alert-box': AlertBox,
   },
   data() {
     return {
@@ -60,18 +77,70 @@ export default {
         password: '',
         remember: false,
       },
+      errorEmail: false,
       show_pass: false,
+      error: '',
+      canSubmit: true,
     };
   },
   methods: {
-    login() {
-      console.log('log in try', this.form);
+    ...mapActions('authentication', ['login']),
+    validateEmail: (email) => {
+      const regex = /\S+@\S+\.\S+/;
+      return regex.test(email);
     },
+    submit() {
+      if (!this.canSubmit) {
+        return;
+      }
+      // Validation
+      this.setError();
+      if (!this.validateEmail(this.form.email)) {
+        this.setError('You have entered an invalid email address!');
+        return;
+      }
+      
+      // Login Call
+      this.canSubmit = false;
+      this.login({
+        username: this.form.email,
+        password: this.form.password
+      })
+        .then(() => {
+          this.$router.replace('home');
+        })
+        .catch(() => {
+          this.setError('There was an error with your account!');
+        })
+        .finally(() => {
+          this.canSubmit = true;
+        });
+    },
+    setError(error) {
+      if (!error) {
+        this.error = [];
+      } else {
+        this.error.push(error);
+      }
+    }
   },
+  watch: {
+    'form.email'() {
+      if (this.form.email != '') {
+        this.errorEmail = !this.validateEmail(this.form.email);
+      } else {
+        this.errorEmail = false;
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
+.logo-component-container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 .login-link-group {
   display: flex;
   width: 100%;
@@ -129,5 +198,19 @@ export default {
   justify-content: flex-end;
   align-items: center;
   flex-direction: row;
+}
+.login-alert-box {
+  margin-bottom: 1em;
+}
+.fadeHeight-enter-active,
+.fadeHeight-leave-active {
+  transition: all 0.2s;
+  max-height: 230px;
+}
+.fadeHeight-enter,
+.fadeHeight-leave-to
+{
+  opacity: 0;
+  max-height: 0px;
 }
 </style>

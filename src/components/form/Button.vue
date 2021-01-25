@@ -1,11 +1,26 @@
 <template>
-  <button class="button-component" @click="press()">
-    <slot></slot>
+  <button class="button-component" :style="loading ? 'background-color: #374151 !important; cursor: auto !important;' : ''" @click.prevent="press()">
+    <slot v-if="!loading"></slot>
+    <transition name="fade" mode="out-in">
+      <spinner-component v-if="loading" size="15px" color="#111827"/>
+    </transition>
   </button>
 </template>
 
 <script>
+import Spinner from '@/components/animations/Spinner.vue';
+
 export default {
+  props: {
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+  components: {
+    'spinner-component': Spinner,
+  },
   methods: {
     press() {
       this.$emit('whenClick');
@@ -29,5 +44,15 @@ export default {
 .button-component:hover,
 .button-component:focus {
   background-color: #d1d5db !important;
+}
+.fade-enter-active {
+  transition: opacity 0.5s;
+}
+.fade-leave-active {
+  transition: opacity 0s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -21,8 +21,10 @@ const actions = {
           commit('SET_ACCESS_TOKEN', response.data.access_token);
           commit('SET_AUTH_STATUS', true);
           resolve({
-            status: 'ok',
-            response: response.data,
+            data: {
+              status: 'ok',
+              response: response.data,
+            }
           });
         })
         .catch(err => reject(err));
@@ -42,7 +44,8 @@ const actions = {
   validate: ({ commit }, token) => {
     commit('SET_AUTH_STATUS', false);
     return new Promise((resolve, reject) => {
-      AuthService.validate(token)
+      if (token) {
+        AuthService.validate(token)
         .then(response => {
           console.log('token validated');
           commit('SET_AUTH_STATUS', true);
@@ -54,6 +57,16 @@ const actions = {
           });
         })
         .catch(err => reject(err));
+      } else {
+        reject({
+          data: {
+            status: 'error',
+            response: {
+              message: 'No token'
+            }
+          }
+        });
+      }
     });
   },
 };
@@ -61,6 +74,7 @@ const actions = {
 const mutations = {
   SET_ACCESS_TOKEN: (state, token) => {
     state.accessToken = token;
+    localStorage.setItem('accessToken', token);
   },
   SET_AUTH_STATUS: (state, status) => {
     state.authenticated = status;
