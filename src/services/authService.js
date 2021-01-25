@@ -22,7 +22,7 @@ export default {
             access_token: 'access_token',
           },
         });
-      }, 5000);
+      }, 1000);
       // reject(error);
     });
   },
