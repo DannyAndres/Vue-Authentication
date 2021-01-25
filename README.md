@@ -1,7 +1,7 @@
 # Vue Authentication
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/pFjJ8dYU4Xg/0.jpg)](https://www.youtube.com/watch?v=pFjJ8dYU4Xg)
-[Go to Youtube demo Log In form](https://www.youtube.com/watch?v=pFjJ8dYU4Xg)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/a3WjkbHK1gM/0.jpg)](https://www.youtube.com/watch?v=a3WjkbHK1gM)
+[Go to Youtube demo Log In form](https://www.youtube.com/watch?v=a3WjkbHK1gM)
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
